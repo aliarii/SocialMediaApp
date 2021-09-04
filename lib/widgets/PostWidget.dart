@@ -318,7 +318,7 @@ class _PostState extends State<Post> {
 
   createPostPicture() {
     return GestureDetector(
-      onDoubleTap: () => controlUserLikePost,
+      onDoubleTap: () => controlUserLikePost(),
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
@@ -355,7 +355,7 @@ class _PostState extends State<Post> {
               onTap: () => displayComments(context,
                   postId: postId, ownerId: ownerId, url: url),
               child: Icon(
-                Icons.near_me_outlined,
+                Icons.chat_bubble_outline_rounded,
                 size: 30.0,
                 color: Colors.blue,
               ),

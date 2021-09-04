@@ -8,16 +8,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'homePage.dart';
 
-class UploadStory extends StatefulWidget {
+class UploadProfileImage extends StatefulWidget {
   final GUser? gCurrentUser;
 
-  UploadStory({this.gCurrentUser});
+  UploadProfileImage({this.gCurrentUser});
 
   @override
-  _UploadStoryState createState() => _UploadStoryState();
+  _UploadProfileImageState createState() => _UploadProfileImageState();
 }
 
-class _UploadStoryState extends State<UploadStory>{
+class _UploadProfileImageState extends State<UploadProfileImage>{
   XFile? file;
   bool uploading = false;
   String postId = Uuid().v4();
@@ -31,9 +31,9 @@ class _UploadStoryState extends State<UploadStory>{
         imageQuality: 60,
         source: ImageSource.camera,
         maxHeight: 680,
-        maxWidth: 970
+        maxWidth: 970,
 
-        );
+    );
     setState(() {
       this.file = image;
     });
@@ -66,44 +66,40 @@ class _UploadStoryState extends State<UploadStory>{
     String? downloadUrl = await uploadPhoto(File(file!.path));
 
     savePostInfoToFireStore(
-        newPostId: postId,
+        //newPostId: postId,
         url: downloadUrl,
-        location: locationTextEditingController.text,
-        description: descriptionTextEditingController.text);
+        //location: locationTextEditingController.text,
+        //description: descriptionTextEditingController.text
+    );
     locationTextEditingController.clear();
     descriptionTextEditingController.clear();
     setState(() {
       file = null;
       uploading = false;
-      postId = Uuid().v4();
+      //postId = Uuid().v4();
     });
   }
 
   savePostInfoToFireStore(
-      {String? newPostId,String? url, String? location, String? description}) async {
+      {String? url}) async {
 
-    final snapshot = await FirebaseFirestore.instance.collection("stories").doc(auth.currentUser!.uid).get();
+    final snapshot = await FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.uid).get();
     if (snapshot.exists) {
       FirebaseFirestore.instance
-          .collection("stories")
+          .collection("users")
           .doc(auth.currentUser!.uid)
           .update({
-        "ownerId": widget.gCurrentUser!.id,
-        "timestamp": DateTime.now(),
-        "url": FieldValue.arrayUnion([url]),
+        "url": url,
       });
     }
     else{
       FirebaseFirestore.instance
-          .collection("stories")
+          .collection("users")
           .doc(auth.currentUser!.uid)
           .set({
-        "ownerId": widget.gCurrentUser!.id,
-        "timestamp": DateTime.now(),
-        "url": FieldValue.arrayUnion([url]),
+        "url": url,
       });
     }
-
 
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("users")
@@ -113,25 +109,22 @@ class _UploadStoryState extends State<UploadStory>{
     querySnapshot.docs.forEach((document) {
       var a = document;
       //print(a.id);
-      FirebaseFirestore.instance.collection("users").doc("${a.id}")
+      FirebaseFirestore.instance.collection("users").doc(a.id)
           .collection("stories")
           .doc(auth.currentUser!.uid)
-          .set({
-        "userName":widget.gCurrentUser!.username,
-        "url":widget.gCurrentUser!.url,
-        "ownerId": widget.gCurrentUser!.id,
+          .update({
+        "url":url,
       });
     });
 
     FirebaseFirestore.instance.collection("users")
-        .doc("${auth.currentUser!.uid}")
+        .doc(auth.currentUser!.uid)
         .collection("stories")
         .doc(auth.currentUser!.uid)
-        .set({
-      "userName":widget.gCurrentUser!.username,
-      "url":widget.gCurrentUser!.url,
-      "ownerId": widget.gCurrentUser!.id,
+        .update({
+      "url":url,
     });
+
   }
 
   Future<String> uploadPhoto(mImageFile) async {
@@ -148,7 +141,7 @@ class _UploadStoryState extends State<UploadStory>{
         builder: (context) {
           return SimpleDialog(
             title: Text(
-              "New Story",
+              "New Image",
               style:
               TextStyle(color: Theme.of(context).hintColor, fontWeight: FontWeight.bold),
             ),
@@ -207,7 +200,7 @@ class _UploadStoryState extends State<UploadStory>{
                     )),
               ),
               child: Text(
-                "Share Story",
+                "Profile Picture",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -220,13 +213,13 @@ class _UploadStoryState extends State<UploadStory>{
       ),
     );
   }
-
+  String? newUrl;
   displayUploadFormScreen() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).accentColor,
         title: Text(
-          "New Post",
+          "New Profile Image",
           style: TextStyle(
               fontSize: 24, color: Theme.of(context).hintColor, fontWeight: FontWeight.bold),
         ),
@@ -238,7 +231,7 @@ class _UploadStoryState extends State<UploadStory>{
               }
             },
             child: Text(
-              "Share",
+              "Upload",
               style: TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,

@@ -33,6 +33,7 @@ class _UploadPageState extends State<UploadPage> {
     final image = await ImagePicker().pickImage(
         imageQuality: 60,
         source: ImageSource.camera,
+
         maxHeight: 680,
         maxWidth: 970);
     setState(() {
@@ -154,8 +155,6 @@ class _UploadPageState extends State<UploadPage> {
     List<Placemark> placeMarks = await GeocodingPlatform.instance
         .placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark mPlaceMark = placeMarks[0];
-    String? completeAddressInfo =
-        '${mPlaceMark.subThoroughfare} ${mPlaceMark.thoroughfare}, ${mPlaceMark.subLocality} ${mPlaceMark.locality}, ${mPlaceMark.subAdministrativeArea} ${mPlaceMark.administrativeArea}, ${mPlaceMark.postalCode} ${mPlaceMark.country}';
     String? specificAddress = '${mPlaceMark.locality}, ${mPlaceMark.country}';
     locationTextEditingController.text = specificAddress;
   }
@@ -240,15 +239,8 @@ class _UploadPageState extends State<UploadPage> {
     return downloadUrl;
   }
 
-  String? newUrl;
-
   displayUploadFormScreen() {
-    if (widget.gCurrentUser!.url.toString() == "") {
-      newUrl =
-          "https://firebasestorage.googleapis.com/v0/b/social-network-e5ffd.appspot.com/o/emptyuser.png?alt=media&token=8e78232b-2f8e-4308-acbb-fdaf03d7764c";
-    } else {
-      newUrl = widget.gCurrentUser!.url.toString();
-    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
@@ -304,7 +296,7 @@ class _UploadPageState extends State<UploadPage> {
           Padding(padding: EdgeInsets.only(top: 12)),
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(newUrl!),
+              backgroundImage: CachedNetworkImageProvider(widget.gCurrentUser!.url.toString()),
             ),
             title: Container(
               width: 250,
@@ -359,7 +351,7 @@ class _UploadPageState extends State<UploadPage> {
                   borderRadius: BorderRadius.circular(35),
                 )),
               ),
-              onPressed: getCurrentLocation,
+              onPressed: getCurrentLocation(),
             ),
           ),
         ],

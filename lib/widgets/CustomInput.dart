@@ -29,7 +29,7 @@ class CustomInput extends StatelessWidget {
       ),
       child: TextField(
         style: TextStyle(
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).hintColor,
         ),
         obscureText: _isPasswordField,
         focusNode: focusNode,

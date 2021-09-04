@@ -152,6 +152,7 @@ class _TimeLinePageState extends State<TimeLinePage> {
                                                 color:
                                                     Theme.of(context).hintColor,
                                                 image: DecorationImage(
+                                                  fit: BoxFit.cover,
                                                     image: NetworkImage(
                                                   gUser!.url.toString(),
                                                 ))),
@@ -163,9 +164,9 @@ class _TimeLinePageState extends State<TimeLinePage> {
                                                 width: 70,
                                                 decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
-                                                    border: Border.all(
+                                                    /*border: Border.all(
                                                         width: 3,
-                                                        color: Colors.black)),
+                                                        color: Colors.black)*/),
                                               ),
                                             ),
                                           ),
@@ -241,6 +242,7 @@ class _TimeLinePageState extends State<TimeLinePage> {
                                                   color: Theme.of(context)
                                                       .hintColor,
                                                   image: DecorationImage(
+                                                      fit: BoxFit.cover,
                                                       image: NetworkImage(
                                                     list[index - 1]["url"]
                                                         .toString(),

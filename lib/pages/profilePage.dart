@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:socialnetworkapp/models/user.dart';
 import 'package:socialnetworkapp/pages/getAllFollowers.dart';
+import 'package:socialnetworkapp/pages/uploadProfileImage.dart';
 import 'package:socialnetworkapp/widgets/HeaderWidget.dart';
 import 'package:socialnetworkapp/pages/homePage.dart';
 import 'package:socialnetworkapp/widgets/PostTileWidget.dart';
-
 import 'package:socialnetworkapp/widgets/PostWidget.dart';
 import 'package:socialnetworkapp/widgets/ProgressWidget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'editProfilePage.dart';
@@ -198,6 +198,95 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+
+  Stack getPlusIcon(){
+    if(userInfo!.id!=gCurrentUser!.id){
+      return  Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color:
+                Theme.of(context).hintColor,
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(
+                      userInfo!.url.toString(),
+                    ))),
+            child: Padding(
+              padding:
+              const EdgeInsets.all(0.0),
+              child: Container(
+                height: 70,
+                width: 70,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color:
+              Theme.of(context).hintColor,
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                    userInfo!.url.toString(),
+                  ))),
+          child: Padding(
+            padding:
+            const EdgeInsets.all(0.0),
+            child: Container(
+              height: 70,
+              width: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                /*border: Border.all(
+                                      width: 3,
+                                      color: Colors.black)*/),
+            ),
+          ),
+        ),
+        Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              height: 20,
+              width: 20,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blue),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            UploadProfileImage(
+                              gCurrentUser: gCurrentUser,
+                            ),
+                      ));
+                },
+                child: Center(
+                  child: Icon(
+                    CupertinoIcons.arrow_2_circlepath,
+                    color: Colors.white,
+                    size: 15,
+                  ),
+                ),
+              ),
+            )),
+      ],
+    );
+  }
+
   createProfileTopView() {
     return StreamBuilder(
       stream: usersReference.doc(widget.userProfileId).snapshots(),
@@ -212,12 +301,14 @@ class _ProfilePageState extends State<ProfilePage> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    CircleAvatar(
+                    getPlusIcon(),
+                    /*CircleAvatar(
+
                       radius: 40.0,
                       backgroundColor: Colors.blue,
                       backgroundImage:
                       CachedNetworkImageProvider(gCurrentUser!.url.toString()),
-                    ),
+                    ),*/
                     Expanded(
                       flex: 1,
                       child: Column(
@@ -233,7 +324,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Followers(
-                                            gCurrentUser: gCurrentUser,
+                                            gCurrentUser: userInfo,
                                           )));
                                 },
                                 child: createColumns(
@@ -245,7 +336,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Followers(
-                                            gCurrentUser: gCurrentUser,
+                                            gCurrentUser: userInfo,
                                           )));
                                 },
                                 child: createColumns(
@@ -405,11 +496,13 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       );
-    } else if (postOrientation == "grid") {
+    }
+    else if (postOrientation == "grid") {
       List<GridTile> gridTilesList = [];
       setState(() {
         postsList.forEach((eachPost) {
           gridTilesList.add(GridTile(
+
               child: Container(
             decoration: BoxDecoration(
               border: Border.all(width: 0.1, color: Colors.grey),
@@ -513,6 +606,7 @@ class _ProfilePageState extends State<ProfilePage> {
             color: Colors.grey,
             thickness: 0.1,
           ),
+
           createListAndGridPostOrientation(),
           Divider(
             color: Colors.transparent,

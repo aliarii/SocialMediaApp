@@ -75,14 +75,14 @@ class _HomePageState extends State<HomePage> {
         activeColor: Theme.of(context).hintColor,
         inactiveColor: Theme.of(context).hintColor,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home_rounded)),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined)),
           BottomNavigationBarItem(icon: Icon(Icons.search_rounded)),
           BottomNavigationBarItem(
               icon: Icon(
             Icons.add_circle_outline_rounded,
           )),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite)),
-          BottomNavigationBarItem(icon: Icon(Icons.person_rounded)),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications_none_rounded)),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline_rounded)),
         ],
       ),
     );
